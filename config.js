@@ -30,7 +30,7 @@ function getConfigFields(self) {
 			type: 'static-text',
 			id: 'info2',
 			width: 12,
-			label: 'Reciever Settings',
+			label: 'Receiver Settings',
 			value: 'Enter the IP address of the receiver or multicast group. For multicast, use 239.255.0.XXX',
 		},
 		{
