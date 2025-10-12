@@ -1,3 +1,4 @@
+const os = require('os')
 const sacnServer = require('./lib/server.js').server
 const { InstanceBase, InstanceStatus, runEntrypoint } = require('@companion-module/base')
 const { v4: uuidv4 } = require('uuid')
@@ -9,6 +10,20 @@ const { TIMER_SLOW_DEFAULT, TIMER_FAST_DEFAULT } = require('./constants.js')
 const { UpgradeScripts } = require('./upgrades.js')
 
 class SAcnInstance extends InstanceBase {
+	constructor(internal) {
+		super(internal)
+		this.localIPs = [{ id: '0.0.0.0', label: `Default: 0.0.0.0` }]
+		const interfaces = os.networkInterfaces()
+		const interface_names = Object.keys(interfaces)
+		interface_names.forEach((nic) => {
+			interfaces[nic].forEach((ip) => {
+				if (ip.family == 'IPv4') {
+					this.localIPs.push({ id: ip.address, label: `${nic}: ${ip.address}` })
+				}
+			})
+		})
+	}
+
 	async init(config) {
 		this.config = config
 
@@ -30,7 +45,7 @@ class SAcnInstance extends InstanceBase {
 
 	// Return config fields for web config
 	getConfigFields() {
-		return getConfigFields(this.id)
+		return getConfigFields(this)
 	}
 
 	keepAlive() {

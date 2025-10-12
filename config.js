@@ -2,7 +2,7 @@ const { Regex } = require('@companion-module/base')
 const { v4: uuidv4 } = require('uuid')
 const { TIMER_SLOW_DEFAULT, TIMER_FAST_DEFAULT } = require('./constants')
 
-function getConfigFields(id) {
+function getConfigFields(self) {
 	return [
 		{
 			type: 'static-text',
@@ -17,7 +17,7 @@ function getConfigFields(id) {
 			id: 'name',
 			width: 12,
 			label: 'Source Name',
-			default: `Companion (${id})`,
+			default: `Companion (${self.id})`,
 		},
 		{
 			type: 'textinput',
@@ -42,13 +42,14 @@ function getConfigFields(id) {
 			regex: Regex.IP,
 		},
 		{
-			type: 'textinput',
+			type: 'dropdown',
 			id: 'localAddress',
 			label: 'Bind to specific IP (optional)',
 			tooltip: 'the IP address of the network interface to bind to. default is $(internal:bind_ip)',
 			width: 5,
-			regex: Regex.IP,
-			default: '',
+			choices: self.localIPs,
+			regex: Regex.HOSTNAME,
+			default: '0.0.0.0',
 		},
 		{
 			type: 'number',
