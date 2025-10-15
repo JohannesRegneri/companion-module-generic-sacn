@@ -12,6 +12,7 @@ export interface ModuleConfig {
 	customIP: string
 	host: string
 	hostText: string
+	mode: string
 	enableSender: boolean
 	enableReceiver: boolean
 	name: string
@@ -51,13 +52,25 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			regex: Regex.HOSTNAME,
 			default: '0.0.0.0',
 		},
-
+		{
+			type: 'dropdown',
+			id: 'mode',
+			width: 12,
+			label: 'Mode',
+			choices: [
+				{ id: 'none', label: 'None' },
+				{ id: 'send', label: 'Transmit' },
+				{ id: 'receive', label: 'Receive' },
+			],
+			default: 'none',
+		},
 		{
 			type: 'static-text',
 			id: 'info',
 			width: 10,
 			label: 'Transmit',
 			value: 'Transmit SACN packets to the ip and universe you specify.',
+			isVisible: (options) => options.mode === 'send',
 		},
 		{
 			type: 'checkbox',
@@ -65,6 +78,8 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			label: 'Transmit',
 			width: 2,
 			default: false,
+			//isVisible: (options) => options.enableReceiver === false,
+			isVisible: () => false,
 		},
 		{
 			type: 'static-text',
@@ -72,6 +87,7 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			width: 10,
 			label: 'Receive',
 			value: 'Receive SACN packets at the interface and universe you specify. Use them as Feedback.',
+			isVisible: (options) => options.mode === 'receive',
 		},
 		{
 			type: 'checkbox',
@@ -79,6 +95,8 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			label: 'Receive',
 			width: 2,
 			default: false,
+			//isVisible: (options) => options.enableSender === false,
+			isVisible: () => false,
 		},
 		{
 			type: 'textinput',
@@ -86,7 +104,7 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			width: 12,
 			label: 'Source Name',
 			default: `Companion (${self.id})`,
-			isVisible: (options) => options.enableSender === true,
+			isVisible: (options) => options.mode === 'send',
 		},
 		{
 			type: 'textinput',
@@ -94,7 +112,7 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			width: 12,
 			label: 'Source UUID',
 			default: uuidv4(),
-			isVisible: (options) => options.enableSender === true,
+			isVisible: (options) => options.mode === 'send',
 		},
 		{
 			type: 'number',
@@ -104,7 +122,7 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			min: 1,
 			max: 201,
 			default: 100,
-			isVisible: (options) => options.enableSender === true,
+			isVisible: (options) => options.mode === 'send',
 		},
 		{
 			type: 'checkbox',
@@ -113,7 +131,7 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			tooltip: 'the default calculates Multicast from Universe',
 			width: 4,
 			default: false,
-			isVisible: (options) => options.enableSender === true,
+			isVisible: (options) => options.mode === 'send',
 		},
 		{
 			type: 'textinput',
@@ -123,7 +141,7 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			width: 5,
 			regex: Regex.IP,
 			default: '',
-			isVisible: (options) => options.enableSender === true && options.customIP === true,
+			isVisible: (options) => options.mode === 'send' && options.customIP === true,
 		},
 		{
 			type: 'static-text',
@@ -131,7 +149,7 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			label: 'Active Target Address',
 			value: calculateMulticastAddress(self.config?.universe ?? 1),
 			width: 5,
-			isVisible: (options) => options.enableSender === true && options.customIP === false,
+			isVisible: (options) => options.mode === 'send' && options.customIP === false,
 		},
 
 		{
@@ -174,7 +192,7 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			width: 12,
 			default: '1-512',
 			regex: '/^(([0-9]+(-[0-9]+){0,1}),{0,1}){1,}$/',
-			isVisible: (options) => options.enableSender === true || options.enableReceiver === true,
+			isVisible: (options) => options.mode === 'send' || options.mode === 'receive',
 		},
 	]
 }

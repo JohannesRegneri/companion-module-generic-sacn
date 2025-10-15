@@ -175,7 +175,7 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 
 		let initialized = false
 
-		if (this.config.enableSender) {
+		if (this.config.mode === 'send') {
 			if (this.config.host) {
 				interface SACNServerOptions {
 					address: string
@@ -236,7 +236,7 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 			}
 		}
 
-		if (this.config.enableReceiver) {
+		if (this.config.mode === 'receive') {
 			this.receiver = new SACNReceiver({
 				universe: this.config.universe,
 				localAddress: this.config.localAddress,
@@ -253,14 +253,16 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 			)
 		}
 
+		if (this.config.mode === 'none') {
+			this.updateStatus(InstanceStatus.BadConfig, 'Missing mode')
+		}
+
 		if (initialized) {
 			this.initVariableDefinitions()
 			this.updateVariableDefinitions()
 			this.updatePresets()
 			this.updateFeedbacks()
 			this.updateStatus(InstanceStatus.Ok)
-		} else {
-			this.updateStatus(InstanceStatus.BadConfig, 'Missing host or receiver disabled')
 		}
 	}
 }
