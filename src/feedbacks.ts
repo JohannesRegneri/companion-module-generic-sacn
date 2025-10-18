@@ -61,7 +61,6 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 				const chan = Number(feedback.options.channel)
 				const val = Number(feedback.options.value)
 				const isval = Number(self.data[chan - 1])
-				console.log(`Chan: ${chan} is ${isval} shouldbe ${val} returns:  ${isval > val}`)
 				return isval > val
 			},
 		},

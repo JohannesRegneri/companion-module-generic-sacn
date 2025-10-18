@@ -21,7 +21,7 @@ export function InitVariableDefinitions(self: SACNInstance): void {
 
 	for (let i = 0; i < self.data.length; i++) {
 		if (self.variable_status?.[i]) {
-			variables.push({ name: `Input Value of channel ${i + 1}`, variableId: `value_chan_${i + 1}` })
+			variables.push({ name: `Value of channel ${i + 1}`, variableId: `value_chan_${i + 1}` })
 		}
 	}
 	self.setVariableDefinitions(variables)

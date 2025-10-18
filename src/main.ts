@@ -119,9 +119,13 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 			this.server.close()
 		}
 
+		if (this.receiver) {
+			this.receiver.close()
+		}
+
 		delete this.server
-		delete this.packet
 		delete this.receiver
+		delete this.packet
 		this.packetlist = []
 		this.data = []
 

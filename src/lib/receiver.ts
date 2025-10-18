@@ -170,16 +170,3 @@ class SACNReceiver {
 }
 
 export { SACNReceiver }
-
-// Example usage:
-/*
-const receiver = new SACNReceiver({
-    universe: 1,
-    port: 5568,
-    localAddress: '192.168.1.100'
-});
-
-receiver.addListener((data) => {
-    console.log('Received packet:', data);
-});
-*/
