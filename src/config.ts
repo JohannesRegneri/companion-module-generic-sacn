@@ -164,7 +164,7 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			type: 'number',
 			id: 'timer_slow',
 			label: `Update interval when no fades are running (ms)`,
-			tooltip: 'Default: 1000ms (1Hz)',
+			tooltip: 'Default: 800ms (1.25Hz)',
 			width: 5,
 			default: TIMER_SLOW_DEFAULT,
 			min: 10,
