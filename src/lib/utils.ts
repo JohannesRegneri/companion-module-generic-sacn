@@ -50,32 +50,26 @@ export function parseRange(input: string, length: number): boolean[] {
 /**
  * Converts a single 16-bit DMX value into two 8-bit values
  * @param value The 16-bit DMX value (0-65535)
- * @returns Array containing [highByte, lowByte]
+ * @returns Array containing [MSB (Coarse), LSB (Fine)]
  */
 export function conv_16bit_to_2_8bit(value: number): [number, number] {
-	// Ensure value is within valid range
 	const clampedValue = Math.max(0, Math.min(65535, value))
 
-	// Extract high byte by shifting right 8 bits
-	const highByte = (clampedValue >> 8) & 0xff
+	const MSB = Math.trunc(Math.floor(clampedValue / 256))
+	const LSB = Math.trunc(clampedValue % 256)
 
-	// Extract low byte by masking lower 8 bits
-	const lowByte = clampedValue & 0xff
-
-	return [highByte, lowByte]
+	return [MSB, LSB]
 }
 
 /**
  * Combines two 8-bit DMX values into a single 16-bit value
- * @param highByte First 8-bit value (0-255)
- * @param lowByte Second 8-bit value (0-255)
+ * @param MSB Coarse 8-bit value (0-255)
+ * @param LSB Fine 8-bit value (0-255)
  * @returns Combined 8-bit value (0-255)
  */
-export function conv_2x_8bit_to_16bit(highByte: number, lowByte: number): number {
-	// Clamp inputs to valid ranges
-	const clampedHigh = Math.max(0, Math.min(255, highByte))
-	const clampedLow = Math.max(0, Math.min(255, lowByte))
+export function conv_2x_8bit_to_16bit(MSB: number, LSB: number): number {
+	const clampedHigh = Math.trunc(Math.max(0, Math.min(255, MSB)))
+	const clampedLow = Math.trunc(Math.max(0, Math.min(255, LSB)))
 
-	// Combine bytes: shift high byte left 8 places and OR with low byte
-	return (clampedHigh << 8) | clampedLow
+	return clampedHigh * 256 + clampedLow
 }

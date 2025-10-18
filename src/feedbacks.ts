@@ -115,7 +115,6 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 				let r
 				let g
 				let b
-				console.log(res16)
 				if (!res16) {
 					r = Number(self.data[chan - 1])
 					g = Number(self.data[chan - 1 + 1])

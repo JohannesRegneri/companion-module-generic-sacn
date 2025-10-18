@@ -1,4 +1,5 @@
 import type { SACNInstance } from './main.js'
+import { conv_2x_8bit_to_16bit } from './lib/utils.js'
 
 export function UpdateActions(self: SACNInstance): void {
 	self.setActionDefinitions({
@@ -78,7 +79,7 @@ export function UpdateActions(self: SACNInstance): void {
 		},
 		offset_single: {
 			name: 'Offset Value (single)',
-			description: 'Change the output of one channels with + or -',
+			description: 'Change the output of one channel with + or -',
 			options: [
 				{
 					type: 'textinput',
@@ -89,7 +90,7 @@ export function UpdateActions(self: SACNInstance): void {
 				},
 				{
 					type: 'textinput',
-					label: 'Channel',
+					label: 'Channel (1-512)',
 					id: 'channel',
 					default: '1',
 					useVariables: true,
@@ -153,6 +154,83 @@ export function UpdateActions(self: SACNInstance): void {
 
 					self.transitions?.run(i + Number(start), Number(newval), Number(duration))
 				}
+			},
+		},
+
+		setValue16: {
+			name: 'Set/Fade Value (single) 16-bit',
+			description: 'Set/Fade the output of one 16-bit channel',
+			options: [
+				{
+					type: 'textinput',
+					label: 'Fade duration (ms)',
+					id: 'duration',
+					default: '1',
+					useVariables: true,
+				},
+				{
+					type: 'textinput',
+					label: 'Start Channel (1-512)',
+					id: 'channel',
+					default: '1',
+					useVariables: true,
+				},
+				{
+					type: 'textinput',
+					label: 'Value (0-65535)',
+					id: 'value',
+					default: '0',
+					useVariables: true,
+				},
+			],
+			callback: async (action) => {
+				const [channel, val, duration] = await Promise.all([
+					self.parseVariablesInString(String(action.options.channel)),
+					self.parseVariablesInString(String(action.options.value)),
+					self.parseVariablesInString(String(action.options.duration)),
+				])
+				self.transitions?.run16(Number(channel), Number(val), Number(duration))
+			},
+		},
+		offset_single_16: {
+			name: 'Offset Value (single)  16-bit',
+			description: 'Change the output of one 16-bit channel with + or -',
+			options: [
+				{
+					type: 'textinput',
+					label: 'Fade duration (ms)',
+					id: 'duration',
+					default: '0',
+					useVariables: true,
+				},
+				{
+					type: 'textinput',
+					label: 'Start Channel (1-512)',
+					id: 'channel',
+					default: '1',
+					useVariables: true,
+				},
+				{
+					type: 'textinput',
+					label: `Value change + or -`,
+					id: 'value',
+					default: '1',
+					useVariables: true,
+				},
+			],
+			callback: async (action) => {
+				const [channel, val, duration] = await Promise.all([
+					self.parseVariablesInString(String(action.options.channel)),
+					self.parseVariablesInString(String(action.options.value)),
+					self.parseVariablesInString(String(action.options.duration)),
+				])
+
+				const currentMSB = self.data[Number(channel) - 1]
+				const currentLSB = self.data[Number(channel)]
+
+				const newval = conv_2x_8bit_to_16bit(currentMSB, currentLSB) + Number(val)
+
+				self.transitions?.run16(Number(channel), Number(newval), Number(duration))
 			},
 		},
 	})
