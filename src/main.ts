@@ -24,7 +24,8 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 	private packet?: Packet
 	public transitions?: Transitions
 	public variable_status?: boolean[]
-	public data = [...Array(512).keys()]
+	public packetlist = new Array(512).fill(0)
+	public data = new Array(512).fill(0)
 	private connectionLostTimer?: NodeJS.Timeout
 	public currentStatus: InstanceStatus = InstanceStatus.Ok
 
@@ -121,6 +122,7 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 		delete this.server
 		delete this.packet
 		delete this.receiver
+		this.packetlist = []
 		this.data = []
 
 		if (this.connectionLostTimer) {
@@ -150,20 +152,21 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 			universe: this.config.universe,
 		}
 
-		if (this.variable_status) {
-			for (let i = 0; i < data.slots.length && i < this.data?.length; i++) {
-				if (this.variable_status[i]) {
-					values[`value_chan_${i + 1}`] = data.slots[i]
-				}
+		for (let i = 0; i < data.slots.length && i < this.data?.length; i++) {
+			if (this.variable_status?.[i]) {
+				values[`value_chan_${i + 1}`] = data.slots[i]
+				this.data[i] = data.slots[i]
 			}
 		}
 
 		this.setVariableValues(values)
+		this.checkFeedbacks()
 	}
 
 	private async init_sacn(): Promise<void> {
 		this.updateStatus(InstanceStatus.Connecting, 'Initializing sACN connection...')
-		this.data = [...Array(512).keys()]
+		this.packetlist = new Array(512).fill(0)
+		this.data = new Array(512).fill(0)
 
 		if (!this.config.customIP) {
 			this.config.host = calculateMulticastAddress(this.config.universe)

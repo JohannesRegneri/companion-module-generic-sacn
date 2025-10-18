@@ -29,7 +29,7 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 			callback: (feedback) => {
 				const chan = Number(feedback.options.channel)
 				const val = Number(feedback.options.value)
-				const isval = Number(self.data[Number(chan) - 1])
+				const isval = Number(self.data[chan - 1])
 
 				return isval === val
 			},
@@ -60,8 +60,8 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 			callback: (feedback) => {
 				const chan = Number(feedback.options.channel)
 				const val = Number(feedback.options.value)
-				const isval = Number(self.data[Number(chan) - 1])
-
+				const isval = Number(self.data[chan - 1])
+				console.log(`Chan: ${chan} is ${isval} shouldbe ${val} returns:  ${isval > val}`)
 				return isval > val
 			},
 		},
@@ -81,12 +81,41 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 			],
 			callback: (feedback) => {
 				const chan = Number(feedback.options.channel)
-				const isval = Number(self.data[Number(chan) - 1])
+				const isval = Number(self.data[chan - 1])
 				const isval_inv = 255 - isval
 
 				return {
 					color: combineRgb(isval_inv, isval_inv, isval_inv),
 					bgcolor: combineRgb(isval, isval, isval),
+				}
+			},
+		},
+		chan_rgb: {
+			type: 'advanced',
+			name: 'Channel RGB',
+			description: "Changes the button's Color according to the channel RGB Values",
+
+			options: [
+				{
+					id: 'channel',
+					type: 'textinput',
+					label: 'Startchannel',
+					default: '1',
+					useVariables: true,
+				},
+			],
+			callback: (feedback) => {
+				const chan = Number(feedback.options.channel)
+				const r = Number(self.data[chan - 1])
+				const g = Number(self.data[chan - 1 + 1])
+				const b = Number(self.data[chan - 1 + 2])
+				const r_i = 255 - r
+				const g_i = 255 - g
+				const b_i = 255 - b
+
+				return {
+					color: combineRgb(r_i, g_i, b_i),
+					bgcolor: combineRgb(r, g, b),
 				}
 			},
 		},

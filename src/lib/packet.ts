@@ -42,12 +42,14 @@ class Packet {
 	}
 
 	validate(): boolean {
+		/*
 		console.debug(
 			'debug: packet.validate()\t\t',
 			`root: ${this.root.validate()}\t\t`,
 			`frame: ${this.frame.validate()}\t\t`,
 			`dmp: ${this.dmp.validate()}`,
 		)
+			*/
 		return this.root.validate() && this.frame.validate() && this.dmp.validate()
 	}
 
