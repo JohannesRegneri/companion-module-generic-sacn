@@ -100,8 +100,17 @@ class FrameLayer {
 		this.buf.writeUInt8(priority, 70)
 	}
 
+	// Synchronized frames are not supported (71-72)
+	//frameLayer.prototype.getSyncAddr
+	//frameLayer.prototype.setSyncAddr
+
 	setSeqNum(num?: number): void {
-		const newNum = num ?? this.buf.readUInt8(73) + 1
+		let newNum = num
+		// Increment if num isn't passed in
+		if (newNum === undefined) {
+			newNum = this.buf.readUInt8(73) + 1
+		}
+
 		this.buf.writeUInt8(newNum & 0xff, 73)
 	}
 

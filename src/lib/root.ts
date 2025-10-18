@@ -65,13 +65,10 @@ class RootLayer {
 	getUUID(): string {
 		let str = ''
 		for (let i = 0; i < 16; i++) {
-			if (i === 3 || i === 7 || i === 11) {
+			if (i == 3 || i == 8 || i == 8 || i == 10) {
 				str += '-'
 			}
-			str += this.buf
-				.readUInt8(i + 22)
-				.toString(16)
-				.padStart(2, '0')
+			str += this.buf.readUInt8(i + 22).toString(16)
 		}
 		return str
 	}

@@ -53,8 +53,11 @@ class DMPLayer {
 		return this.buf.length
 	}
 
-	public setPDULength(len?: number): void {
-		const newLen = len ?? this.buf.length
+	public setPDULength(len: number): void {
+		let newLen = len
+		if (len === undefined) {
+			newLen = this.buf.length
+		}
 		this.buf.writeUInt16BE(SACN_DMP_FLAGS | (newLen & 0x0fff), 0)
 	}
 
@@ -77,8 +80,7 @@ class DMPLayer {
 	}
 
 	public getSlots(): Buffer {
-		return Buffer.from(Uint8Array.prototype.slice.call(this.buf, 11))
-		//return Buffer.from(this.buf.slice(11));
+		return this.buf.slice(11)
 	}
 
 	public setSlots(slots: Buffer): void {

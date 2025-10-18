@@ -13,21 +13,22 @@ class Packet {
 	public dmp!: DMPLayer
 
 	constructor(opt?: any | Buffer) {
-		if (!(this instanceof Packet)) {
+		// make sure we are a packet
+		if (this instanceof Packet === false) {
 			return new Packet(opt)
 		}
 
 		if (opt === undefined) {
 			this.buf = Buffer.alloc(SACN_MAX_PACKET_SIZE)
-		} else if (typeof opt === 'number' && opt <= 512) {
+		} else if (Number.isInteger(opt) && opt <= 512) {
 			this.buf = Buffer.alloc(SACN_MIN_PACKET_SIZE + opt)
 		} else if (Buffer.isBuffer(opt) && opt.length >= SACN_MIN_PACKET_SIZE && opt.length <= SACN_MAX_PACKET_SIZE) {
 			this.buf = opt
 		}
 
-		this.root = new RootLayer(Buffer.from(Uint8Array.prototype.slice.call(this.buf, 0, 38)))
-		this.frame = new FrameLayer(Buffer.from(Uint8Array.prototype.slice.call(this.buf, 38, 115)))
-		this.dmp = new DMPLayer(Buffer.from(Uint8Array.prototype.slice.call(this.buf, 115)))
+		this.root = new RootLayer(this.buf.slice(0, 38))
+		this.frame = new FrameLayer(this.buf.slice(38, 115))
+		this.dmp = new DMPLayer(this.buf.slice(115))
 
 		if (!Buffer.isBuffer(opt)) {
 			this.init()

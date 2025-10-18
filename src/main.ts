@@ -104,6 +104,7 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 			this.packet.setOption('TERMINATED', false)
 			this.server.send(this.packet)
 			this.updateVariableDefinitions()
+			this.checkFeedbacks()
 		}
 	}
 
@@ -181,24 +182,12 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 					address: string
 					localAddress: string
 					universe: number
-					onUpdate: (data: IncomingData) => void
-				}
-
-				interface IncomingData {
-					sourceName: string
-					sourceUUID: string
-					fps: number
-					priority: number
-					timestamp: number
-					packetsPerSecond: number
-					slots: unknown[]
 				}
 
 				this.server = new SACNServer({
 					address: this.config.host,
 					localAddress: this.config.localAddress,
 					universe: this.config.universe || 0x01,
-					onUpdate: (data: IncomingData) => this.handleIncomingData(data),
 				} as SACNServerOptions)
 
 				this.packet = this.server.createPacket(512)
@@ -221,7 +210,7 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 				)
 
 				this.connectionLostTimer = setInterval(() => {
-					if (!this.transitions?.isRunning()) {
+					if (!this.transitions || !this.transitions.isRunning()) {
 						this.keepAlive()
 					}
 				}, this.config.timer_slow || TIMER_SLOW_DEFAULT)

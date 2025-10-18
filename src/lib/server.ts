@@ -54,7 +54,6 @@ class SACNServer implements SACNServer {
 	}
 	close(): void {
 		this.socket.close()
-		console.log(`info`, `Closing SACN Server`)
 	}
 }
 

@@ -50,20 +50,20 @@ class Transitions {
 	}
 
 	run(channel: number, to: number, duration: number): void {
-		const from = this.data[channel]
-		// console.debug(`Run fade on "${channel}" from "${from}" to "${to}" over "${duration}"ms`)
+		const from = this.data[channel - 1]
+		//console.debug(`Run fade on "${channel}" from "${from}" to "${to}" over "${duration}"ms`)
 		if (from === undefined) {
 			// Not a valid channel, so ignore
 			return
 		}
 
-		const stepCount = Math.ceil(duration / this.tickMs)
+		const stepCount = Math.ceil((duration || 0) / this.tickMs)
 
 		if (stepCount <= 1) {
 			// this.transitions.delete(channel)
 			// this.data[channel] = to
 			// Force a single step for the next tick
-			this.transitions.set(channel, {
+			this.transitions.set(channel - 1, {
 				steps: [to],
 			})
 		} else {
@@ -75,7 +75,7 @@ class Transitions {
 				steps.push(from + diff * fraction)
 			}
 
-			this.transitions.set(channel, {
+			this.transitions.set(channel - 1, {
 				steps,
 			})
 		}

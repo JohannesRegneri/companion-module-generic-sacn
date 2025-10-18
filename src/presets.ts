@@ -11,7 +11,7 @@ export function UpdatePresets(self: SACNInstance): void {
 		if (self.variable_status?.[i]) {
 			presets[`input_ch_${i + 1}`] = {
 				type: 'button',
-				category: `Input Channels`,
+				category: `Channel Values`,
 				name: `Channel ${i + 1}`,
 				style: {
 					text: `Ch: ${i + 1}\nValue:\n$(SACN:value_chan_${i + 1})`,
@@ -21,7 +21,14 @@ export function UpdatePresets(self: SACNInstance): void {
 					show_topbar: false,
 				},
 				steps: [],
-				feedbacks: [],
+				feedbacks: [
+					{
+						feedbackId: 'chan_intensity',
+						options: {
+							channel: `${i + 1}`,
+						},
+					},
+				],
 			}
 		}
 	}

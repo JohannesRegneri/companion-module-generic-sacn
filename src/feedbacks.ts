@@ -1,14 +1,14 @@
-import { combineRgb, Regex } from '@companion-module/base'
+import { combineRgb } from '@companion-module/base'
 import type { SACNInstance } from './main.js'
 
 export function UpdateFeedbacks(self: SACNInstance): void {
 	self.setFeedbackDefinitions({
 		chan_matches_value: {
 			type: 'boolean',
-			name: 'When channel is matches a value',
+			name: 'When channel matches a value',
 			description: "Changes the button's style when the value matches is pending.",
 			defaultStyle: {
-				bgcolor: combineRgb(204, 102, 0),
+				bgcolor: combineRgb(0, 153, 0),
 				color: combineRgb(255, 255, 255),
 			},
 			options: [
@@ -17,21 +17,77 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 					type: 'textinput',
 					label: 'Channel',
 					default: '1',
-					regex: Regex.NUMBER,
+					useVariables: true,
 				},
 				{
 					id: 'value',
 					type: 'textinput',
 					label: 'Value',
 					default: '1',
-					regex: Regex.FLOAT_OR_INT,
 				},
 			],
 			callback: (feedback) => {
-				return (
-					feedback.options.value === self.getVariableValue(`value_chan_${feedback.options.channel}`)
-					// TODO
-				)
+				const chan = Number(feedback.options.channel)
+				const val = Number(feedback.options.value)
+				const isval = Number(self.data[Number(chan) - 1])
+
+				return isval === val
+			},
+		},
+		chan_greater_than: {
+			type: 'boolean',
+			name: 'When channel value is greater than',
+			description: "Changes the button's style when the value is greater than",
+			defaultStyle: {
+				bgcolor: combineRgb(0, 153, 0),
+				color: combineRgb(255, 255, 255),
+			},
+			options: [
+				{
+					id: 'channel',
+					type: 'textinput',
+					label: 'Channel',
+					default: '1',
+					useVariables: true,
+				},
+				{
+					id: 'value',
+					type: 'textinput',
+					label: 'Threshold',
+					default: '128',
+				},
+			],
+			callback: (feedback) => {
+				const chan = Number(feedback.options.channel)
+				const val = Number(feedback.options.value)
+				const isval = Number(self.data[Number(chan) - 1])
+
+				return isval > val
+			},
+		},
+		chan_intensity: {
+			type: 'advanced',
+			name: 'Channel Intensity',
+			description: "Changes the button's style according to the channel brigthness",
+
+			options: [
+				{
+					id: 'channel',
+					type: 'textinput',
+					label: 'Channel',
+					default: '1',
+					useVariables: true,
+				},
+			],
+			callback: (feedback) => {
+				const chan = Number(feedback.options.channel)
+				const isval = Number(self.data[Number(chan) - 1])
+				const isval_inv = 255 - isval
+
+				return {
+					color: combineRgb(isval_inv, isval_inv, isval_inv),
+					bgcolor: combineRgb(isval, isval, isval),
+				}
 			},
 		},
 	})
