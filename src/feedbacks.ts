@@ -102,16 +102,33 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 					default: '1',
 					useVariables: true,
 				},
+				{
+					id: 'resolution16',
+					type: 'checkbox',
+					label: '16-Bit',
+					default: false,
+				},
 			],
 			callback: (feedback) => {
+				const res16 = feedback.options.resolution16
 				const chan = Number(feedback.options.channel)
-				const r = Number(self.data[chan - 1])
-				const g = Number(self.data[chan - 1 + 1])
-				const b = Number(self.data[chan - 1 + 2])
+				let r
+				let g
+				let b
+				console.log(res16)
+				if (!res16) {
+					r = Number(self.data[chan - 1])
+					g = Number(self.data[chan - 1 + 1])
+					b = Number(self.data[chan - 1 + 2])
+				} else {
+					// Only use the High values
+					r = Number(self.data[chan - 1])
+					g = Number(self.data[chan + 1])
+					b = Number(self.data[chan + 3])
+				}
 				const r_i = 255 - r
 				const g_i = 255 - g
 				const b_i = 255 - b
-
 				return {
 					color: combineRgb(r_i, g_i, b_i),
 					bgcolor: combineRgb(r, g, b),
