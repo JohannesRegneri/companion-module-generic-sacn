@@ -193,7 +193,7 @@ export function UpdateActions(self: SACNInstance): void {
 			},
 		},
 		offset_single_16: {
-			name: 'Offset Value (single)  16-bit',
+			name: 'Offset Value (single) 16-bit',
 			description: 'Change the output of one 16-bit channel with + or -',
 			options: [
 				{
@@ -231,6 +231,70 @@ export function UpdateActions(self: SACNInstance): void {
 				const newval = conv_2x_8bit_to_16bit(currentMSB, currentLSB) + Number(val)
 
 				self.transitions?.run16(Number(channel), Number(newval), Number(duration))
+			},
+		},
+		percent_single_flex: {
+			name: 'Set/Fade Value (single) percentage (0–100%)',
+			description: 'Change the output of one channel from 0-100%',
+			options: [
+				{
+					type: 'textinput',
+					label: 'Fade duration (ms)',
+					id: 'duration',
+					default: '0',
+					useVariables: true,
+				},
+				{
+					type: 'textinput',
+					label: 'Channel (1-512)',
+					id: 'channel',
+					default: '1',
+					useVariables: true,
+				},
+				{
+					type: 'textinput',
+					label: `Value in Percent`,
+					id: 'percent',
+					default: '1',
+					useVariables: true,
+				},
+				{
+					type: 'checkbox',
+					label: 'Use offset',
+					tooltip: 'Offset current value + or -',
+					id: 'relative',
+					default: false,
+				},
+				{
+					type: 'checkbox',
+					label: '16-Bit Value',
+					id: 'resolution',
+					default: false,
+				},
+			],
+			callback: async (action) => {
+				const [channel, percent, duration] = await Promise.all([
+					self.parseVariablesInString(String(action.options.channel)),
+					self.parseVariablesInString(String(action.options.percent)),
+					self.parseVariablesInString(String(action.options.duration)),
+				])
+
+				if (!action.options.resolution) {
+					const val = Math.round((Number(percent) / 100) * 255)
+					const newval = action.options.relative
+						? Math.min(255, Math.max(0, self.data[Number(channel) - 1] + val))
+						: val
+
+					self.transitions?.run(Number(channel), newval, Number(duration))
+				} else {
+					const val = Math.round((Number(percent) / 100) * 65535)
+					const currentMSB = self.data[Number(channel) - 1]
+					const currentLSB = self.data[Number(channel)]
+
+					const newval = action.options.relative ? conv_2x_8bit_to_16bit(currentMSB, currentLSB) + val : val
+
+					self.transitions?.run16(Number(channel), newval, Number(duration))
+				}
 			},
 		},
 	})
