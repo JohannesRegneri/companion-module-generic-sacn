@@ -138,10 +138,10 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 	}
 
 	handleIncomingData(data: {
-		sourceName: string
-		sourceUUID: string
-		fps: string
-		priority: string
+		sourceName: string[]
+		sourceUUID: string[]
+		fps: number[]
+		priority: number[]
 		timestamp: number
 		packetsPerSecond: number
 		slots: unknown[]

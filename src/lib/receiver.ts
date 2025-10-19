@@ -8,10 +8,10 @@ export const SACN_DEFAULT_PORT = 5568
 
 interface SACNPayload {
 	slots: number[]
-	sourceName: string
-	sourceUUID: string
-	priority: string
-	fps: string
+	sourceName: string[]
+	sourceUUID: string[]
+	priority: number[]
+	fps: number[]
 	packetsPerSecond: number
 	timestamp: number
 	activeSources?: { name: string; uuid: string; priority: number; fps: number }[]
@@ -137,10 +137,10 @@ class SACNReceiver {
 		// Create payload with merged data
 		const payload: SACNPayload = {
 			slots: Array.from(mergedSlots), // Convert Buffer to number[]
-			sourceName: activeSources.length > 0 ? JSON.stringify(activeSources.map((source) => source.name)) : '',
-			sourceUUID: activeSources.length > 0 ? JSON.stringify(activeSources.map((source) => source.uuid)) : '',
-			priority: activeSources.length > 0 ? JSON.stringify(activeSources.map((source) => source.priority)) : '0',
-			fps: activeSources.length > 0 ? JSON.stringify(activeSources.map((source) => source.fps)) : '0',
+			sourceName: activeSources.map((source) => source.name),
+			sourceUUID: activeSources.map((source) => source.uuid),
+			priority: activeSources.map((source) => source.priority),
+			fps: activeSources.map((source) => source.fps),
 			packetsPerSecond,
 			timestamp,
 			activeSources,

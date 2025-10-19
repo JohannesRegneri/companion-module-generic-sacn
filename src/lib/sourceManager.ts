@@ -42,11 +42,8 @@ export class SourceManager {
 				slots: Buffer.alloc(slots.length),
 				fps: 0,
 			}
-			this.sources.set(uuid, sourceData)
-		}
-
-		// Update timing and fps
-		if (sourceData.lastPacketTime > 0) {
+		} else {
+			// Calculate FPS based on last packet time before updating it
 			sourceData.fps = this.calculateFPS(sourceData.lastPacketTime, timestamp)
 		}
 
@@ -72,18 +69,17 @@ export class SourceManager {
 			}
 		}
 
-		const existing = this.sources.get(uuid)
-		if (existing) {
-			sourceData.fps = this.calculateFPS(existing.lastPacketTime, timestamp)
-		}
-
 		this.sources.set(uuid, sourceData)
 		this.updateMergedOutput()
 	}
 
 	private calculateFPS(lastTime: number, currentTime: number): number {
 		const timeDiff = currentTime - lastTime
-		return timeDiff > 0 ? Math.round(1000 / timeDiff) : 0
+		if (timeDiff <= 0) return 0
+
+		const fps = 1000 / timeDiff
+		// Cap FPS at reasonable values (1-100 Hz) and round to nearest integer
+		return Math.round(Math.min(Math.max(fps, 1), 100))
 	}
 
 	private updateMergedOutput(): void {
