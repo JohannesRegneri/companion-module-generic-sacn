@@ -11,7 +11,9 @@ export const SACN_DMX_START_CODE = {
 	UTF8: 0x90,
 	MFR: 0x91,
 	INFO: 0xcf,
+	PRIORITY: 0xdd,
 } as const
+// Startcodes: https://tsp.esta.org/tsp/working_groups/CP/DMXAlternateCodes.php
 
 class DMPLayer {
 	private buf: Buffer
@@ -44,7 +46,8 @@ class DMPLayer {
 		} else if (this.buf.readUInt16BE(6) !== SACN_ADDR_INCREMENT) {
 			valid = false
 		} else if (this.buf.readUInt8(10) !== SACN_DMX_START_CODE.NULL) {
-			valid = false
+			//valid = false
+			// for per-adress priority
 		}
 		return valid
 	}
@@ -77,6 +80,10 @@ class DMPLayer {
 			newLen += 1
 		}
 		this.buf.writeUInt16BE(newLen, 8)
+	}
+
+	public getStartCode(): number {
+		return this.buf.readUInt8(10)
 	}
 
 	public getSlots(): Buffer {

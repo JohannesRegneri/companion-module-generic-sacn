@@ -140,11 +140,12 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 	handleIncomingData(data: {
 		sourceName: string
 		sourceUUID: string
-		fps: number
-		priority: number
+		fps: string
+		priority: string
 		timestamp: number
 		packetsPerSecond: number
 		slots: unknown[]
+		activeSources?: { name: string; uuid: string; priority: number; fps: number }[]
 	}): void {
 		const values: any = {
 			name: data.sourceName,
@@ -154,6 +155,7 @@ export class SACNInstance extends InstanceBase<ModuleConfig> {
 			lastpackage: new Date(data.timestamp).toISOString(),
 			packet_rate: data.packetsPerSecond,
 			universe: this.config.universe,
+			source_list: data.activeSources,
 		}
 
 		for (let i = 0; i < data.slots.length && i < this.data?.length; i++) {

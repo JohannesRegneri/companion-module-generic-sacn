@@ -81,7 +81,9 @@ class FrameLayer {
 	}
 
 	getSourceName(): string {
-		return this.buf.toString('ascii', 6, 70)
+		const name = this.buf.toString('ascii', 6, 70).replace(/\0/g, '')
+		// Remove trailing spaces and null characters
+		return name
 	}
 
 	setSourceName(name: string): void {

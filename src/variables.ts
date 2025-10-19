@@ -9,6 +9,7 @@ export const VariableMapping = {
 	lastpackage: 'Last sACN packet',
 	packet_rate: 'Packets per Second',
 	universe: 'Universe',
+	source_list: 'JSON Object of active sources',
 }
 
 export function InitVariableDefinitions(self: SACNInstance): void {
