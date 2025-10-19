@@ -42,6 +42,7 @@ export class SourceManager {
 				slots: Buffer.alloc(slots.length),
 				fps: 0,
 			}
+			this.sources.set(uuid, sourceData)
 		} else {
 			// Calculate FPS based on last packet time before updating it
 			sourceData.fps = this.calculateFPS(sourceData.lastPacketTime, timestamp)
