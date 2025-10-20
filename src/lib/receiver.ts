@@ -110,10 +110,11 @@ class SACNReceiver {
 					Buffer.alloc(0), // No DMX data in priority packet
 					now,
 					slots, // Priority values
+					true,
 				)
 			} else if (startCode === SACN_DMX_START_CODE.NULL) {
 				// This is a regular DMX data packet (0x00)
-				this.sourceManager.updateSource(sourceUUID, sourceName, portPriority, slots, now)
+				this.sourceManager.updateSource(sourceUUID, sourceName, portPriority, slots, now, undefined, false)
 			}
 
 			// Update packets per second counter

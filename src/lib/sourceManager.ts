@@ -9,6 +9,7 @@ interface SourceData {
 	slots: Buffer // DMX slot values from 0x00 packet
 	lastPriorityPacketTime: number // Timestamp of last 0xdd packet
 	fps: number
+	perAdressPriority: boolean
 }
 
 export class SourceManager {
@@ -28,6 +29,7 @@ export class SourceManager {
 		slots: Buffer, // DMX data from 0x00 packet
 		timestamp: number,
 		addressPriorities?: Buffer, // Optional 0xdd packet priorities
+		perAdressPriority?: boolean, // Optional Source uses per adress priority
 	): void {
 		let sourceData = this.sources.get(uuid)
 
@@ -41,6 +43,7 @@ export class SourceManager {
 				lastPriorityPacketTime: 0,
 				slots: Buffer.alloc(slots.length),
 				fps: 0,
+				perAdressPriority: false,
 			}
 			this.sources.set(uuid, sourceData)
 		} else {
@@ -51,6 +54,9 @@ export class SourceManager {
 		// Always update name and lastPacketTime
 		sourceData.name = name
 		sourceData.lastPacketTime = timestamp
+		if (typeof perAdressPriority === 'boolean' && !sourceData.perAdressPriority) {
+			sourceData.perAdressPriority = perAdressPriority
+		}
 
 		// If this is a per-address priority packet (0xdd), upgrade mode and update priorities
 		// If this is a per-address priority packet (0xdd), update per-address priorities
@@ -134,6 +140,7 @@ export class SourceManager {
 			uuid: source.uuid,
 			priority: source.portPriority, // Use port priority for backwards compatibility
 			fps: source.fps,
+			perAdressPriority: source.perAdressPriority,
 		}))
 	}
 
