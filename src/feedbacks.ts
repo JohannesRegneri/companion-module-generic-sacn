@@ -6,7 +6,7 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 		chan_matches_value: {
 			type: 'boolean',
 			name: 'When channel matches a value',
-			description: "Changes the button's style when the value matches is pending.",
+			description: "Changes the button's style when the value matches",
 			defaultStyle: {
 				bgcolor: combineRgb(0, 153, 0),
 				color: combineRgb(255, 255, 255),
@@ -92,7 +92,7 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 		chan_rgb: {
 			type: 'advanced',
 			name: 'Channel RGB',
-			description: "Changes the button's Color according to the channel RGB Values",
+			description: "Changes the button's color according to the channel RGB Values",
 
 			options: [
 				{
