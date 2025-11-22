@@ -49,6 +49,7 @@ export function GetConfigFields(self: SACNInstance): SomeCompanionConfigField[] 
 			tooltip: 'the IP address of the network interface to bind to. default is $(internal:bind_ip)',
 			width: 6,
 			choices: self.localIPs,
+			allowCustom: true,
 			regex: Regex.HOSTNAME,
 			default: '0.0.0.0',
 		},
