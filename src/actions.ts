@@ -58,7 +58,7 @@ export function UpdateActions(self: SACNInstance): void {
 				},
 				{
 					type: 'textinput',
-					label: 'Values (space-separated list)',
+					label: 'Values (space/colon-separated list)',
 					id: 'values',
 					regex: '/((^| )([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])){1,512}$/',
 					default: '0 1 255',
@@ -71,7 +71,8 @@ export function UpdateActions(self: SACNInstance): void {
 					self.parseVariablesInString(String(action.options.start)),
 					self.parseVariablesInString(String(action.options.duration)),
 				])
-				const values = valuesRaw.split(' ')
+				const values = valuesRaw.replaceAll(':', ' ').split(' ')
+				console.log(values)
 				for (let i = 0; i < values.length; i++) {
 					self.transitions?.run(i + Number(start), Number(values[i]), Number(duration))
 				}
@@ -135,7 +136,7 @@ export function UpdateActions(self: SACNInstance): void {
 				},
 				{
 					type: 'textinput',
-					label: 'Values to change + or - (space-separated list) ',
+					label: 'Values to change + or - (space/colon-separated list) ',
 					id: 'values',
 					regex: '/((^| )([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])){1,512}$/',
 					default: '0 1 255',
@@ -148,7 +149,7 @@ export function UpdateActions(self: SACNInstance): void {
 					self.parseVariablesInString(String(action.options.values)),
 					self.parseVariablesInString(String(action.options.duration)),
 				])
-				const values = valuesRaw.split(' ')
+				const values = valuesRaw.replaceAll(':', ' ').split(' ')
 				for (let i = 0; i < values.length; i++) {
 					const newval = Math.min(255, Math.max(0, self.data[i + (Number(start) - 1)] + Number(values[i])))
 
