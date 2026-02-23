@@ -67,7 +67,7 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 		chan_intensity: {
 			type: 'advanced',
 			name: 'Channel Intensity',
-			description: "Changes the button's style according to the channel brigthness",
+			description: "Changes the button's style according to the channel brightness",
 
 			options: [
 				{
@@ -98,7 +98,7 @@ export function UpdateFeedbacks(self: SACNInstance): void {
 				{
 					id: 'channel',
 					type: 'textinput',
-					label: 'Startchannel',
+					label: 'Start channel',
 					default: '1',
 					useVariables: true,
 				},

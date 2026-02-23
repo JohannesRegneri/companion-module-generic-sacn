@@ -47,7 +47,7 @@ class DMPLayer {
 			valid = false
 		} else if (this.buf.readUInt8(10) !== SACN_DMX_START_CODE.NULL) {
 			//valid = false
-			// for per-adress priority
+			// for per-address priority
 		}
 		return valid
 	}
